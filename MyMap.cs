@@ -23,7 +23,8 @@ namespace algo
 					return;
 				}
 				TupleExtend p = this.open_set[index];
-
+				string str = string.Format("选中点:({0},{1})", p.Item1, p.Item2);
+				Console.WriteLine(str);
 				if (this.isEndPoint(p))
 				{
 					Console.WriteLine("成功");
@@ -41,7 +42,7 @@ namespace algo
 				this.ProcessPoint(new TupleExtend(p.Item1 + 1, p.Item2), p);
 				this.ProcessPoint(new TupleExtend(p.Item1 + 1, p.Item2 + 1), p);
 				this.ProcessPoint(new TupleExtend(p.Item1, p.Item2 + 1), p);
-
+				Console.WriteLine("=================");
 			}
 		}
 
@@ -84,7 +85,7 @@ namespace algo
 				return;
 			}
 			p1.cost = this.TotalCost((p1.Item1, p1.Item2));
-			string str = string.Format("处理点({0},{1}),代价:{2}", p1.Item1, p1.Item2, p1.cost);
+			string str = string.Format("处理点({0},{1}),优先级:{2}", p1.Item1, p1.Item2, p1.cost);
 			Console.WriteLine(str);
 			if (this.isInOpenList(new TupleExtend(p1.Item1, p1.Item2)) == false)
 			{
@@ -134,6 +135,11 @@ namespace algo
 		public int column;
 		public List<TupleExtend> open_set = new List<TupleExtend>();// 待遍历的节点
 		public List<TupleExtend> close_set = new List<TupleExtend>();//已经遍历过的节点
+		/// <summary>
+		/// 默认起点在左下角，终点在右上角
+		/// </summary>
+		/// <param name="row"></param>
+		/// <param name="column"></param>
 		public MyMap(int row,int column)
 		{
 			this.mp = new int[row][];
@@ -153,6 +159,25 @@ namespace algo
 				}
 			}
 		}
+		public MyMap(int row, int column,(int,int) start,(int,int) end)
+		{
+			this.mp = new int[row][];
+			for (int i = 0; i < row; i++)
+			{
+				this.mp[i] = new int[column];
+			}
+			this.row = row;
+			this.column = column;
+			this.start = start;
+			this.end = end;
+			for (int i = 0; i < row; i++)
+			{
+				for (int j = 0; j < column; j++)
+				{
+					this.mp[i][j] = 1;
+				}
+			}
+		}
 		// f(n) = g(n) + h(n)
 
 		/// <summary>
@@ -162,8 +187,8 @@ namespace algo
 		/// <returns></returns>
 		private double baseCost( ValueTuple<int, int> p2)
 		{   
-			int x_dis = Math.Abs(p2.Item1);
-			int y_dis = Math.Abs(p2.Item2);
+			int x_dis = Math.Abs(p2.Item1-this.start.Item1);
+			int y_dis = Math.Abs(p2.Item2-this.start.Item2);
 			int smaller= Math.Min(x_dis, y_dis);
 			double ret = x_dis + y_dis + (Math.Sqrt(2) - 2) * smaller;
 			return ret;
@@ -177,8 +202,8 @@ namespace algo
 		/// <returns></returns>
 		private double HeuristicCost(ValueTuple<int, int> p2)
 		{ 
-			int x_dis = Math.Abs(this.column- 1 - p2.Item1);
-			int y_dis = Math.Abs(this.row - 1 -p2.Item2);
+			int x_dis = Math.Abs(p2.Item1- this.end.Item1 );
+			int y_dis = Math.Abs(p2.Item2- this.end.Item2 );
 			int smaller = Math.Min(x_dis, y_dis);
 			double ret = x_dis + y_dis + (Math.Sqrt(2) - 2) * smaller;
 			return ret;

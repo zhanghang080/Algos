@@ -6,8 +6,10 @@ namespace algo
 	{
 		static void Main(string[] args)
 		{
-
-			MyMap mp = new MyMap(8, 8);
+		
+			(int, int) start = (0, 0);
+			(int, int) end = (7, 7);
+			MyMap mp = new MyMap(8, 8,start,end);
 			for(int i = 2;i <=5;i++)
 			{
 				for(int j =1;j<=5;j++)
@@ -19,6 +21,7 @@ namespace algo
 			mp.mp[5][6] = 0;
 			mp.run();
 			printMap(mp);
+			
 		}
 		static void printMap(MyMap mp)
 		{
